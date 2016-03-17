@@ -20,20 +20,32 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jcraft.jsch.JSchException;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.logging.Logger;
+
 public class MainActivity extends AppCompatActivity {
-    TextView textView;
-    EditText cmd;
+    private TextView textView;
+    private EditText cmd;
+
+    private SimpleSsh ssh;
+    private PrintStream shell;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        assert toolbar != null;
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent in = new Intent(getApplicationContext(), SubmissionActivity.class);
-                startActivity(in);
+                startActivityForResult(in, 1);
 
                 return true;
             }
@@ -82,5 +94,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String host = data.getStringExtra("host");
+                String user = data.getStringExtra("user");
+                String pass = data.getStringExtra("pass");
+
+                try {
+                    this.ssh = new SimpleSsh(host, user, pass);
+                    this.shell = ssh.openShell(System.out);
+                } catch (JSchException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

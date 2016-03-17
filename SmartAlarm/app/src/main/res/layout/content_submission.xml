@@ -17,38 +17,38 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/userEditText"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:autoText="false"
-        android:hint="Name" />
+        android:hint="Username" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:hint="Pass" />
+        android:id="@+id/passEditText"
+        android:layout_below="@+id/userEditText"
+        android:layout_alignStart="@+id/userEditText"
+        android:hint="Password" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPostalAddress"
         android:ems="10"
-        android:id="@+id/editText3"
-        android:layout_below="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
+        android:id="@+id/hostEditText"
+        android:layout_below="@+id/passEditText"
+        android:layout_alignStart="@+id/passEditText"
         android:hint="Host" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/button2"
-        android:layout_below="@+id/editText3"
+        android:text="Save"
+        android:id="@+id/saveButton"
+        android:layout_below="@+id/hostEditText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp" />
 

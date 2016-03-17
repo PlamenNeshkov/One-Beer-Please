@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     private EditText cmd;
+    private ProgressBar pb;
 
     private SimpleSsh ssh;
     private PrintStream shell;
@@ -57,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        textView = (TextView) findViewById(R.id.textView);
         cmd = (EditText) findViewById(R.id.cmd);
+        pb = (ProgressBar) findViewById(R.id.loadingPanel);
+        pb.setVisibility(View.GONE);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton != null) {
@@ -113,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
+                pb.setVisibility(View.VISIBLE);
 
                 final String host = data.getStringExtra("host");
                 final String user = data.getStringExtra("user");
@@ -121,22 +125,37 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Username: " + user);
                 Log.d(TAG, "Host: " + host);
 
-                new Thread(new Runnable() {
+                Thread connect = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             ssh = new SimpleSsh(host, user, pass);
                             shell = ssh.openShell(System.out);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(), "Successful connection", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         } catch (Exception e) {
                             Log.wtf(TAG, "Ssh error!");
                             Log.wtf(TAG, e.getClass().toString());
                             Log.wtf(TAG, e.getMessage());
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(), "Failed connection", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
-                        Log.i(TAG, "Successful connection.");
                     }
-                }).start();
+                });
 
-
+                connect.start();
             }
         }
     }

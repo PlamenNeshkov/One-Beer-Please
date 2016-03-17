@@ -27,14 +27,14 @@ public class SimpleSsh {
         session = sch.getSession(username, hostname, 22);
         session.setPassword(password);
         session.setConfig("StrictHostKeyChecking", "no");
-        session.connect();
+        session.connect(10000);
     }
 
     public PrintStream openShell(OutputStream out) throws JSchException, IOException {
         channel = session.openChannel("shell");
         PrintStream shellStream = new PrintStream(channel.getOutputStream());
         channel.setOutputStream(out);
-        channel.connect();
+        channel.connect(10000);
         return shellStream;
     }
 }

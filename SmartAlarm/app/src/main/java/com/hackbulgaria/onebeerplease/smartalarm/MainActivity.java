@@ -114,21 +114,29 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
 
-                String host = data.getStringExtra("host");
-                String user = data.getStringExtra("user");
-                String pass = data.getStringExtra("pass");
+                final String host = data.getStringExtra("host");
+                final String user = data.getStringExtra("user");
+                final String pass = data.getStringExtra("pass");
 
                 Log.d(TAG, "Username: " + user);
                 Log.d(TAG, "Host: " + host);
 
-                try {
-                    this.ssh = new SimpleSsh(host, user, pass);
-                    this.shell = ssh.openShell(System.out);
-                } catch (Exception e) {
-                    Log.wtf(TAG, "Ssh error!");
-                    Log.wtf(TAG, e.getClass().toString());
-                    Log.wtf(TAG, e.getMessage());
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            ssh = new SimpleSsh(host, user, pass);
+                            shell = ssh.openShell(System.out);
+                        } catch (Exception e) {
+                            Log.wtf(TAG, "Ssh error!");
+                            Log.wtf(TAG, e.getClass().toString());
+                            Log.wtf(TAG, e.getMessage());
+                        }
+                        Log.i(TAG, "Successful connection.");
+                    }
+                }).start();
+
+
             }
         }
     }

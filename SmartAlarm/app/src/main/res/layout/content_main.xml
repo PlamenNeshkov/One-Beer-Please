@@ -9,11 +9,34 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.hackbulgaria.onebeerplease.smartalarm.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.hackbulgaria.onebeerplease.smartalarm.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Hello World!"
+        android:id="@+id/textView" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:id="@+id/button"
+        android:layout_marginBottom="87dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="showKeyBoard"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="cmd commands"
+        android:ems="10"
+        android:id="@+id/cmd"
+        android:layout_above="@+id/button"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_marginBottom="43dp" />
+
 </RelativeLayout>

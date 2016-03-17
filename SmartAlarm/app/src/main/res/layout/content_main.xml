@@ -23,10 +23,10 @@
         android:layout_height="wrap_content"
         android:text="Button"
         android:id="@+id/button"
-        android:layout_marginBottom="87dp"
-        android:layout_alignParentBottom="true"
+        android:onClick="showKeyBoard"
+        android:layout_below="@+id/cmd"
         android:layout_centerHorizontal="true"
-        android:onClick="showKeyBoard"/>
+        android:layout_marginTop="43dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -35,8 +35,8 @@
         android:text="cmd commands"
         android:ems="10"
         android:id="@+id/cmd"
-        android:layout_above="@+id/button"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_marginBottom="43dp" />
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="102dp" />
 
 </RelativeLayout>

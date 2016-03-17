@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
@@ -27,6 +28,10 @@ import java.io.PrintStream;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+
+    private Intent intent;
+
     private TextView textView;
     private EditText cmd;
 
@@ -44,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent in = new Intent(getApplicationContext(), SubmissionActivity.class);
-                startActivityForResult(in, 1);
+                Intent connectionIntent = new Intent(MainActivity.this, SubmissionActivity.class);
+                startActivityForResult(connectionIntent, 1);
 
                 return true;
             }
@@ -55,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textView);
         cmd = (EditText) findViewById(R.id.cmd);
 
-        Button button = (Button) findViewById(R.id.button);
-        if (button != null) {
-            button.setOnClickListener(new View.OnClickListener() {
+        Button sendButton = (Button) findViewById(R.id.sendButton);
+        if (sendButton != null) {
+            sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    textView.setText(cmd.getText());
-                    showKeyBoard(view);
+                    hideKeyBoard(view);
+                    shell.println(cmd.getText());
+                    shell.flush();
                 }
             });
         }
@@ -73,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
        manager.showSoftInput(cmd,InputMethodManager.SHOW_IMPLICIT);
    }
+    public void hideKeyBoard(View v){
+        //textView = (TextView) findViewById(R.id.textView);
+        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(cmd.getWindowToken(),0);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,21 +107,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
+
                 String host = data.getStringExtra("host");
                 String user = data.getStringExtra("user");
                 String pass = data.getStringExtra("pass");
 
+                Log.d(TAG, "Username: " + user);
+                Log.d(TAG, "Host: " + host);
+
                 try {
                     this.ssh = new SimpleSsh(host, user, pass);
                     this.shell = ssh.openShell(System.out);
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Log.wtf(TAG, "Ssh error!");
+                    Log.wtf(TAG, e.getClass().toString());
+                    Log.wtf(TAG, e.getMessage());
                 }
             }
         }

@@ -10,6 +10,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jcraft.jsch.JSchException;
+
 public class SubmissionActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -39,9 +41,17 @@ public class SubmissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra("user", user.getText());
-                intent.putExtra("pass", pass.getText());
-                intent.putExtra("host", host.getText());
+//                try {
+//                    SimpleSsh ssh = new SimpleSsh(host.getText, user.getText(), pass.getText());
+//                } catch (JSchException e) {
+//                    e.printStackTrace();
+//                }
+                intent.setClass(getApplicationContext(), MainActivity.class);
+                intent.putExtra("user", user.getText().toString());
+                intent.putExtra("pass", pass.getText().toString());
+                intent.putExtra("host", host.getText().toString());
+
+               // startActivity(intent);
 
                 setResult(RESULT_OK, intent);
                 finish();

@@ -12,16 +12,16 @@
     tools:context="com.hackbulgaria.onebeerplease.smartalarm.SubmissionActivity"
     tools:showIn="@layout/activity_submission">
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/userEditText"
+        android:hint="User"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:autoText="false"
-        android:hint="Username" />
+        android:layout_alignStart="@+id/passEditText"
+        android:layout_marginTop="41dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -29,27 +29,27 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/passEditText"
+        android:hint="Password"
         android:layout_below="@+id/userEditText"
-        android:layout_alignStart="@+id/userEditText"
-        android:hint="Password" />
+        android:layout_alignStart="@+id/hostEditText" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPostalAddress"
         android:ems="10"
         android:id="@+id/hostEditText"
+        android:hint="Host"
         android:layout_below="@+id/passEditText"
-        android:layout_alignStart="@+id/passEditText"
-        android:hint="Host" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="Submit"
         android:id="@+id/saveButton"
+        android:layout_marginTop="43dp"
         android:layout_below="@+id/hostEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

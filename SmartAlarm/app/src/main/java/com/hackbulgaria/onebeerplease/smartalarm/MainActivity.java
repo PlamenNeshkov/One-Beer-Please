@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.jcraft.jsch.JSchException;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,9 +49,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MultiAutoCompleteTextView text = (MultiAutoCompleteTextView)findViewById(R.id.cmd);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, CmdCommands.COMMANDS);
+
+        text.setAdapter(adapter);
+        text.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        assert toolbar != null;
+
+       //open new activity from the toolbar settings
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -62,28 +75,99 @@ public class MainActivity extends AppCompatActivity {
         cmd = (EditText) findViewById(R.id.cmd);
         pb = (ProgressBar) findViewById(R.id.loadingPanel);
         pb.setVisibility(View.GONE);
-
+        //command line button
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton != null) {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    hideKeyBoard(view);
-                    shell.println(cmd.getText());
-                    shell.flush();
+                    //prompt user if textField is empty
+                    if (cmd.getText().toString().equals("")){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                pb.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "Empty field", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }else {
+                        hideKeyBoard(view);
+                        shell.println(cmd.getText());
+                        cmd.setText("");
+                        shell.flush();
+                    }
                 }
+
             });
         }
+           Button arm = (Button) findViewById(R.id.armBtn);
+           arm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                        shell.println("sh ./arm.sh");
+                        shell.flush();
 
+                }
+           });
+           Button disArm = (Button) findViewById(R.id.disarmBtn);
+            disArm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                    shell.println("sh ./disarm.sh");
+                    shell.flush();
+
+                }
+            });
+
+           Button windowsDown = (Button) findViewById(R.id.windowsDownBtn);
+            windowsDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                    shell.println("sh ./windowsdown.sh");
+                    shell.flush();
+
+                }
+            });
+           Button windowsUp = (Button) findViewById(R.id.windowsUpBtn);
+            windowsUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                    shell.println("sh ./windowsup.sh");
+                    shell.flush();
+
+                }
+            });
+           Button lighttsOn = (Button) findViewById(R.id.lightsOnBtn);
+            lighttsOn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                    shell.println("sh ./lightson.sh");
+                    shell.flush();
+
+                }
+            });
+           Button lightsOff = (Button) findViewById(R.id.lightsOffBtn);
+            lightsOff.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //prompt user if textField is empty
+                    shell.println("sh ./lightsoff.sh");
+                    shell.flush();
+
+                }
+            });
     }
 
    public void showKeyBoard(View v){
-       //textView = (TextView) findViewById(R.id.textView);
        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
        manager.showSoftInput(cmd,InputMethodManager.SHOW_IMPLICIT);
    }
     public void hideKeyBoard(View v){
-        //textView = (TextView) findViewById(R.id.textView);
         InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(cmd.getWindowToken(),0);
     }
@@ -116,22 +200,24 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-                pb.setVisibility(View.VISIBLE);
 
+                pb.setVisibility(View.VISIBLE);
+                //get data from submission activity
                 final String host = data.getStringExtra("host");
-                final String user = data.getStringExtra("user");
+                final String user = data.getStringExtra("name");
                 final String pass = data.getStringExtra("pass");
 
                 Log.d(TAG, "Username: " + user);
                 Log.d(TAG, "Host: " + host);
 
+                //create ssh connection
                 Thread connect = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             ssh = new SimpleSsh(host, user, pass);
                             shell = ssh.openShell(System.out);
-
+                            //prompt user if login succeed
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
